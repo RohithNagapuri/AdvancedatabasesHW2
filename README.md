@@ -56,15 +56,4 @@ The Library Management System manages books, members, and loans:
   - Each **Loan** involves one **Member** and one **Book**.
 
 ### Chen Notation
-```dot
-digraph LibraryManagementSystem {
-    node [shape=record];
-
-    Book [label="{Book | book_id, title, author}"];
-    Member [label="{Member | member_id, name, membership_date}"];
-    Loan [label="{Loan | loan_id, loan_date, return_date}"];
-
-    edge [arrowhead=none];
-    Member -> Loan [label="borrows"];
-    Loan -> Book [label="borrowed by"];
-}
+![image alt](https://github.com/RohithNagapuri/AdvancedatabasesHW2/blob/c4b1c2dbb80096ee7fc718772bdf26f24e337929/Screenshot%202025-02-10%20011717db.png)

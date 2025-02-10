@@ -1,4 +1,4 @@
-# AdvancedatabasesHW2
+# ADVANCED DATABASE HW2
 # Entity-Relation Models
 
 ## Team Members
@@ -17,7 +17,7 @@
 3. [School Course Enrollment System](#school-course-enrollment-system)
     - Problem Description
     - Chen Notation
-    - Crow's Foot Notation
+    - Crow's Foot Notation 
     - Relation Set Schema
     - Design Decisions
 4. [Hotel Booking System](#hotel-booking-system)

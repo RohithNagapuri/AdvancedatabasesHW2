@@ -1,0 +1,334 @@
+---
+title: "Advanced Database - HW2: Entity Relation Diagrams"
+author:  
+  - "Rohith Nagapuri"  
+  - "Charan Rao Thoodi"  
+  - "Roshan Nagapuri"  
+format: html
+toc: true
+toc-title: "Table of Contents"
+toc-depth: 3
+---
+
+
+
+# Introduction
+
+Entity-Relation (ER) diagrams are fundamental in database design, representing real-world systems in structured data models. This report includes detailed ER diagrams and schemas for three systems:
+
+1. Library Management System
+2. School Course Enrollment System
+3. Hotel Booking System
+
+Each system is modeled using Chen Notation and Crow's Foot Notation, followed by a detailed relational schema and design discussions.
+
+---
+
+# Library Management System
+
+## Problem Description
+
+The Library Management System manages books, members, and loans:
+
+**Entities:**
+
+- **Book:** `book_id (PK)`, `title`, `author`
+- **Member:** `member_id (PK)`, `name`, `membership_date`
+- **Loan:** `loan_id (PK)`, `loan_date`, `return_date`
+
+**Relationships:**
+
+- A Member can borrow multiple Books.
+- A Book can be borrowed by multiple Members.
+- Each Loan involves one Member and one Book.
+
+## Chen Notation (Graphviz)
+{dot}
+digraph G {
+  node [shape=ellipse];
+  BookID [label="BookID"];
+  Title [label="Title"];
+  Author [label="Author"];
+  MemberID [label="MemberID"];
+  Name [label="Name"];
+  MembershipDate [label="MembershipDate"];
+  LoanID [label="LoanID"];
+  LoanDate [label="LoanDate"];
+  ReturnDate [label="ReturnDate"];
+
+  Book [shape=box, label="Book"];
+  Member [shape=box, label="Member"];
+  Loan [shape=diamond, label="Loan"];
+
+  Book -> BookID;
+  Book -> Title;
+  Book -> Author;
+
+  Member -> MemberID;
+  Member -> Name;
+  Member -> MembershipDate;
+
+  Loan -> LoanID;
+  Loan -> LoanDate;
+  Loan -> ReturnDate;
+
+  Member -> Loan [label="borrows"];
+  Loan -> Book [label="includes"];
+}
+
+## Crow Foot Notation 
+{dot}
+erDiagram
+  MEMBER ||--o{ LOAN : borrows
+  BOOK ||--o{ LOAN : includes
+  MEMBER {
+    int MemberID PK
+    string Name
+    date MembershipDate
+  }
+  BOOK {
+    int BookID PK
+    string Title
+    string Author
+  }
+  LOAN {
+    int LoanID PK
+    date LoanDate
+    date ReturnDate
+    int MemberID FK
+    int BookID FK
+  }
+
+  ## Relation Set Schema
+
+- **Book**(book_id PK, title, author)  
+- **Member**(member_id PK, name, membership_date)  
+- **Loan**(loan_id PK, loan_date, return_date, member_id FK, book_id FK)  
+
+## Design Decisions
+
+- **Cardinality and Participation:**  
+  - **Library Management System:** A member can borrow multiple books (optional participation for books and members in loans).  
+  - **School Course Enrollment System:** A student can enroll in multiple courses (mandatory participation for enrollments).  
+  - **Hotel Booking System:** A guest can make multiple bookings (optional participation for rooms and guests in bookings).  
+
+- **Weak Entities:**  
+  - None; all entities have unique primary keys.
+
+- **Composite Attributes:**  
+  - Composite attributes like "name" were simplified into single attributes for ease of querying.  
+
+- **Multivalued Attributes:**  
+  - Avoided by introducing separate entities or bridge tables to handle many-to-many relationships.  
+
+---
+
+# School Course Enrollment System
+
+## Problem Description
+
+The School Course Enrollment System manages courses, students, and enrollments:
+
+### Entities:
+
+- **Course**: `course_id (PK)`, `title`, `credits`  
+- **Student**: `student_id (PK)`, `name`, `enrollment_date`  
+- **Enrollment**: `enrollment_id (PK)`, `enrollment_date`, `grade`  
+
+### Relationships:
+
+- A Student can enroll in multiple Courses.  
+- A Course can have multiple Students.  
+- Each Enrollment involves one Student and one Course.  
+
+
+## Chen Notation (Graphviz)
+{dot}
+digraph G {
+  node [shape=ellipse];
+  CourseID [label="CourseID"];
+  Title [label="Title"];
+  Credits [label="Credits"];
+  StudentID [label="StudentID"];
+  Name [label="Name"];
+  EnrollmentDate [label="EnrollmentDate"];
+  EnrollmentID [label="EnrollmentID"];
+  Grade [label="Grade"];
+
+  Course [shape=box, label="Course"];
+  Student [shape=box, label="Student"];
+  Enrollment [shape=diamond, label="Enrollment"];
+
+  Course -> CourseID;
+  Course -> Title;
+  Course -> Credits;
+
+  Student -> StudentID;
+  Student -> Name;
+  Student -> EnrollmentDate;
+
+  Enrollment -> EnrollmentID;
+  Enrollment -> Grade;
+  Enrollment -> EnrollmentDate;
+
+  Student -> Enrollment [label="enrolls"];
+  Enrollment -> Course [label="involves"];
+}
+
+## Crow Foot Notation 
+{dot}
+erDiagram
+  STUDENT ||--o{ ENROLLMENT : enrolls
+  COURSE ||--o{ ENROLLMENT : involves
+  STUDENT {
+    int StudentID PK
+    string Name
+    date EnrollmentDate
+  }
+  COURSE {
+    int CourseID PK
+    string Title
+    int Credits
+  }
+  ENROLLMENT {
+    int EnrollmentID PK
+    date EnrollmentDate
+    string Grade
+    int StudentID FK
+    int CourseID FK
+  }
+
+  ## Design Choices
+
+- **Weak Entities:**  
+  Enrollment is treated as a regular entity to capture additional attributes like grade.  
+
+- **Composite Attributes:**  
+  None.  
+
+- **Multivalued Attributes:**  
+  None.  
+
+- **Cardinality:**  
+  A student can enroll in multiple courses, and each course can have multiple students.  
+
+- **Participation:**  
+  Total participation of Enrollment with both Student and Course.  
+
+---
+
+## Relational Set Schemas
+
+- **Student**(student_id PK, name, enrollment_date)  
+- **Course**(course_id PK, title, credits)  
+- **Enrollment**(enrollment_id PK, enrollment_date, grade, student_id FK, course_id FK)  
+
+---
+
+# Hotel Booking System
+
+## Problem Description
+
+The Hotel Booking System tracks rooms, guests, and bookings:
+
+### Entities:
+
+- **Room**: `room_number (PK)`, `type`, `rate`  
+- **Guest**: `guest_id (PK)`, `name`, `contact_information`  
+- **Booking**: `booking_id (PK)`, `check_in_date`, `check_out_date`  
+
+### Relationships:
+
+- A Guest can make multiple Bookings.  
+- A Room can have multiple Bookings.  
+- Each Booking involves one Guest and one Room.  
+
+## Chen  Notation (Graphviz)
+{dot}
+digraph G {
+  node [shape=ellipse];
+  RoomNumber [label="RoomNumber"];
+  Type [label="Type"];
+  Rate [label="Rate"];
+  GuestID [label="GuestID"];
+  Name [label="Name"];
+  ContactInfo [label="ContactInfo"];
+  BookingID [label="BookingID"];
+  CheckInDate [label="CheckInDate"];
+  CheckOutDate [label="CheckOutDate"];
+
+  Room [shape=box, label="Room"];
+  Guest [shape=box, label="Guest"];
+  Booking [shape=diamond, label="Booking"];
+
+  Room -> RoomNumber;
+  Room -> Type;
+  Room -> Rate;
+
+  Guest -> GuestID;
+  Guest -> Name;
+  Guest -> ContactInfo;
+
+  Booking -> BookingID;
+  Booking -> CheckInDate;
+  Booking -> CheckOutDate;
+
+  Guest -> Booking [label="makes"];
+  Booking -> Room [label="reserves"];
+}
+
+## Crow Foot Notation
+{dot}
+erDiagram
+  GUEST ||--o{ BOOKING : makes
+  ROOM ||--o{ BOOKING : reserves
+  GUEST {
+    int GuestID PK
+    string Name
+    string ContactInfo
+  }
+  ROOM {
+    int RoomNumber PK
+    string Type
+    float Rate
+  }
+  BOOKING {
+    int BookingID PK
+    date CheckInDate
+    date CheckOutDate
+    int GuestID FK
+    int RoomNumber FK
+  }
+
+  ## Design Choices
+
+- **Weak Entities:**  
+  None.  
+
+- **Composite Attributes:**  
+  ContactInfo could be composite but was kept as a simple attribute.  
+
+- **Multivalued Attributes:**  
+  None.  
+
+- **Cardinality:**  
+  A guest can make multiple bookings, and each room can be booked multiple times.  
+
+- **Participation:**  
+  Total participation of Booking with both Guest and Room.  
+
+---
+
+## Relational Set Schemas
+
+- **Guest**(guest_id PK, name, contact_information)  
+- **Room**(room_number PK, type, rate)  
+- **Booking**(booking_id PK, check_in_date, check_out_date, guest_id FK, room_number FK)  
+
+---
+
+# Conclusion
+
+The ER diagrams for the Library Management System, School Course Enrollment System, and Hotel Booking System effectively model their respective databases. Design decisions ensure scalability, normalization, and ease of querying while balancing trade-offs like performance and complexity. Each system provides a strong foundation for implementation and future enhancements.
+
+---

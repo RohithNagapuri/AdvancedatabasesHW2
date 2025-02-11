@@ -21,7 +21,7 @@
     - Relation Set Schema
     - Design Decisions
 4. [Hotel Booking System](#hotel-booking-system)
-    - Problem Description
+    - Problem Description  
     - Chen Notation
     - Crow's Foot Notation
     - Relation Set Schema
